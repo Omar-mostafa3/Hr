@@ -1,11 +1,12 @@
 // scripts/add-employees-and-fix.js
+// scripts/add-employees-and-fix.js
 // Run with: node scripts/add-employees-and-fix.js
 // This script creates 20 employees with only 3 exceptions (missing bank details)
 
 import { MongoClient } from 'mongodb';
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017';
-const DATABASE_NAME = process.env.DATABASE_NAME || 'hr-main';
+const DATABASE_NAME = process.env.DATABASE_NAME || 'HR';
 
 const randomNumber = (min, max) =>
   Math.floor(Math.random() * (max - min + 1) + min);
