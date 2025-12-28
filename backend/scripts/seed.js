@@ -7,7 +7,7 @@ import { MongoClient } from 'mongodb';
 import bcrypt from 'bcrypt';
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017';
-const DATABASE_NAME = process.env.DATABASE_NAME || 'hr-main';
+const DATABASE_NAME = process.env.DATABASE_NAME || 'HR';
 
 // ============================================
 // UTILITY FUNCTIONS
