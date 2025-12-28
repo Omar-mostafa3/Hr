@@ -11,17 +11,24 @@ import { EmployeeSystemRole, EmployeeSystemRoleSchema } from '../employee-profil
 
 @Module({
   imports: [
-    // Import Employee Schema so Auth can look up users
+    // Import Employee Schemas for authentication lookup
     MongooseModule.forFeature([
       { name: EmployeeProfile.name, schema: EmployeeProfileSchema },
       { name: EmployeeSystemRole.name, schema: EmployeeSystemRoleSchema },
     ]),
-    PassportModule,
+    // Passport module with JWT as default strategy
+    PassportModule.register({ 
+      defaultStrategy: 'jwt',
+      property: 'user',
+    }),
+    // JWT module with async configuration
     JwtModule.registerAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET') || 'FALLBACK_SECRET_KEY',
-        signOptions: { expiresIn: '60m' },
+        signOptions: { 
+          expiresIn: configService.get<string>('JWT_EXPIRATION') || '60m' 
+        },
       }),
       inject: [ConfigService],
     }),
@@ -30,4 +37,4 @@ import { EmployeeSystemRole, EmployeeSystemRoleSchema } from '../employee-profil
   providers: [AuthService, JwtStrategy],
   exports: [AuthService],
 })
-export class AuthModule {}
+export class AuthModule { }
