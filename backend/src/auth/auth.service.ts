@@ -40,8 +40,7 @@ export class AuthService {
       isActive: true,
     }).exec();
 
-    const roles = systemRole?.roles || [];
-
+    const roles = systemRole?.roles || ['USER']; // Provide default USER role if none assigned
     const { password, ...result } = user.toObject();
     return {
       ...result,
@@ -53,12 +52,18 @@ export class AuthService {
   // 2. Login (Generate Token)
   async login(user: any) {
     const email = user.workEmail || user.personalEmail || '';
+    // Ensure roles array is never empty - use default USER role if no roles assigned
+    const roles = user.roles && Array.isArray(user.roles) && user.roles.length > 0 
+      ? user.roles 
+      : ['USER'];
+    
     const payload = {
       email,
       sub: user._id,
       employeeProfileId: user.employeeProfileId || user._id.toString(),
-      roles: user.roles || [],
+      roles: roles,
     };
+
     return {
       access_token: this.jwtService.sign(payload),
     };
@@ -67,20 +72,21 @@ export class AuthService {
   // 3. Register (Optional helper for seeding/testing)
   async register(registerDto: any) {
     const hashedPassword = await bcrypt.hash(registerDto.password, 10);
-
+    
     // Generate unique employee number
     const employeeNumber = await this.generateEmployeeNumber();
-
+    
     // Set dateOfHire to current date if not provided
     const dateOfHire = registerDto.dateOfHire ? new Date(registerDto.dateOfHire) : new Date();
-
+    
     const newUser = new this.employeeModel({
       ...registerDto,
       password: hashedPassword,
       employeeNumber,
       dateOfHire,
-      status: registerDto.status || EmployeeStatus.ACTIVE, // Default to ACTIVE if not provided
+      status: registerDto.status || EmployeeStatus.ACTIVE,
     });
+    
     return newUser.save();
   }
 
