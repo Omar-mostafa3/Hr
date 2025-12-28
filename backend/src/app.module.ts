@@ -1,4 +1,5 @@
-import { Module } from '@nestjs/common';
+40
+  import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
@@ -33,7 +34,7 @@ import { ConfigModule } from '@nestjs/config';
       useFactory: () => {
         mongoose.pluralize(null);
         return {
-          uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/hr-main',
+          uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/HR',
         };
       },
     }),
